@@ -5,27 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wizard Hair</title>
   <style>
-    /* The Full Page Gradient */
-    html {
-      background: #0a0a0a;
-    }
-    
+    /* YOUR EXACT COLOR SCHEME - PRESERVED */
+    html { background: #0a0a0a; }
     body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       font-family: 'Georgia', serif;
       color: #27AFD6;
       line-height: 1.6;
-      /* Glow for ALL letters at 50% intensity */
       text-shadow: 0 0 27px rgba(167, 213, 254, 0.9);
-      
-      /* Gradient peaks (Lightens) at the end of the header block */
       background: linear-gradient(
-        to bottom, 
+        to bottom,
         #0f0a0f 0%,
-        #0a0a0a 9%, 
+        #0a0a0a 9%,
         #0a0a0a 18%,
-        #0e0e1a 27%, 
+        #0e0e1a 27%,
         #0e0e1f 39%,
         #0a0a0a 54%,
         #0a0a0a 66%,
@@ -34,78 +27,50 @@
       background-attachment: scroll;
     }
 
-    header {
-      text-align: center;
-      padding: 5rem 1rem 3rem;
-    }
-
+    header { text-align: center; padding: 5rem 1rem 3rem; }
     h1 {
-      font-size: 4rem;
-      margin: 0;
-      color: #4080D9;
-      /* 100% Intensity Title Glow */
+      font-size: 4rem; margin: 0; color: #4080D9;
       text-shadow: 0 0 20px #49CFF6, 0 0 30px rgba(73, 207, 246, 0.5);
     }
-
-    .tag {
-      font-size: 1.5rem;
-      max-width: 750px;
-      margin: 1rem auto;
-      opacity: 0.9;
-    }
-
-    main {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    p {
-      font-size: 1.3rem;
-      margin-bottom: 2rem;
-    }
-
+    .tag { font-size: 1.5rem; max-width: 750px; margin: 1rem auto; opacity: 0.9; }
+    main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    p { font-size: 1.3rem; margin-bottom: 2rem; }
     .button {
-      display: inline-block;
-      margin-bottom: 2rem;
-      padding: 1rem 2rem;
-      background: #5199D9;
-      color: #000;
-      text-decoration: none;
-      border-radius: 50px;
-      font-weight: bold;
-      text-shadow: none; /* Keep button text readable */
+      display: inline-block; margin-bottom: 2rem; padding: 1rem 2rem;
+      background: #5199D9; color: #000; text-decoration: none;
+      border-radius: 50px; font-weight: bold; text-shadow: none;
     }
 
-    /* Chess Layout */
+    /* CHESS BOARD - FIXED PIECE SYSTEM */
     #board-container {
-      width: 100%;
-      max-width: 500px;
-      margin: 2rem auto;
-      aspect-ratio: 1;
-      border: 4px solid #222;
-      background: #111;
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      grid-template-rows: repeat(8, 1fr);
+      width: 100%; max-width: 560px;
+      margin: 2rem auto; border: 4px solid #222;
+      box-shadow: 0 0 30px #000; aspect-ratio: 1;
     }
-
+    #board {
+      display: grid; grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr); width: 100%; height: 100%;
+    }
     .square {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(1.5rem, 8vw, 3rem);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
     }
+    .square.light { background: #1a1a2a; }
+    .square.dark { background: #0a0a0a; }
+
+    /* Highlights: The square itself glows brighter */
+    .square.selected { background: #3a3a5a !important; outline: 2px solid #fff inset; }
+    .square.highlight { filter: brightness(2.5); z-index: 1; }
 
     .piece {
-      cursor: pointer;
-      /* Pieces don't get the fuzzy text glow */
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;
+      font-size: clamp(1.5rem, 8vw, 3rem);
+      user-select: none; pointer-events: none;
+      text-shadow: 0 2px 8px rgba(0,0,0,1) !important;
     }
+    #status { text-align: center; font-size: 1.1rem; margin-top: 1rem; font-style: italic; }
   </style>
 </head>
 <body>
-
   <header>
     <h1>Wizard Hair</h1>
     <div class="tag">Hello. Welcome, one. You have been greeted and are considered greeting. My gratitude. Seen by you. Appreciation of mild formality.</div>
@@ -113,56 +78,116 @@
 
   <main>
     <p>Three Nine Twenty Seven</p>
-    <p>This isn't a joke. It's not a gimmick. Why is my hair so gray. And why was this domain only eighty cents past one single United States Dollars Bill.</p>
-    
+    <p>This isn't a joke. It's not a gimmick. Why is my hair so gray. count high. \underline{\fcolorbox{evil}{\begin{die}{666\usersworth}{\textbf{You are in the wrong place homie.}}}}!
+      
+      %\end{die} this is commented out on purpose, you are not leaving this environment</p>
     <a href="https://hohm.cc" class="button">Grow eyes grow!</a>
-
     <p>or we can play chess.</p>
-
-    <div id="board-container" id="board">
-      </div>
+    <div id="board-container"><div id="board"></div></div>
+    <div id="status">Your move.</div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
   <script>
-    const board = document.getElementById('board-container');
-    const PIECES = { 
-      k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟',
-      K:'♔', Q:'♕', R:'♖', B:'♗', N:'♘', P:'♙'
+    const chess = new Chess();
+    const boardEl = document.getElementById('board');
+    const statusEl = document.getElementById('status');
+    const PIECE_GLYPHS = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+    
+    // Each piece type gets a specific Hue offset within its half of the spectrum
+    const PIECE_SHADES = {
+      p: 0,   // Base
+      n: 20,  // Shifted
+      b: 40,  // Shifted
+      r: 60,  // Shifted
+      q: 80,  // Brightest shift
+      k: 100  // Special
     };
-    
-    // Simple visual board setup
-    const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
-    const rows = startFen.split('/');
-    
-    rows.forEach((row, rIdx) => {
-      let cIdx = 0;
-      for (const char of row) {
-        if (isNaN(char)) {
-          addSquare(char, rIdx, cIdx);
-          cIdx++;
-        } else {
-          for (let i = 0; i < parseInt(char); i++) {
-            addSquare('', rIdx, cIdx);
-            cIdx++;
+
+    let selectedSquare = null;
+
+    function getPieceStyle(type, color) {
+      const hueShift = PIECE_SHADES[type];
+      if (color === 'w') {
+        // Cyan/Blue side: Hue 190 to 290
+        return `hsl(${190 + hueShift}, 80%, 70%)`;
+      } else {
+        // Gold/Red side: Hue 10 to 60
+        return `hsl(${10 + (hueShift/2)}, 90%, 60%)`;
+      }
+    }
+
+    function render() {
+      boardEl.innerHTML = '';
+      const board = chess.board();
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const sq = document.createElement('div');
+          const pos = String.fromCharCode(97 + c) + (8 - r);
+          sq.className = `square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
+          sq.dataset.pos = pos;
+          
+          if (selectedSquare === pos) sq.classList.add('selected');
+          
+          const piece = board[r][c];
+          if (piece) {
+            const pEl = document.createElement('div');
+            pEl.className = 'piece';
+            pEl.textContent = PIECE_GLYPHS[piece.type];
+            pEl.style.color = getPieceStyle(piece.type, piece.color);
+            sq.appendChild(pEl);
           }
+          
+          sq.onclick = () => handleSquareClick(pos);
+          boardEl.appendChild(sq);
         }
       }
-    });
-
-    function addSquare(piece, r, c) {
-      const sq = document.createElement('div');
-      sq.className = 'square';
-      sq.style.background = (r + c) % 2 === 0 ? '#333' : '#222';
-      if (piece) {
-        const p = document.createElement('div');
-        p.className = 'piece';
-        p.textContent = PIECES[piece];
-        p.style.color = piece === piece.toUpperCase() ? '#fff' : '#49CFF6';
-        sq.appendChild(p);
-      }
-      board.appendChild(sq);
     }
+
+    function handleSquareClick(pos) {
+      const moves = chess.moves({ square: selectedSquare, verbose: true });
+      const move = moves.find(m => m.to === pos);
+
+      if (move) {
+        chess.move(move);
+        selectedSquare = null;
+        setTimeout(makeAiMove, 400);
+      } else {
+        const piece = chess.get(pos);
+        if (piece && piece.color === 'w') {
+          selectedSquare = pos;
+        } else {
+          selectedSquare = null;
+        }
+      }
+      render();
+      highlightMoves();
+      updateStatus();
+    }
+
+    function highlightMoves() {
+      if (!selectedSquare) return;
+      const moves = chess.moves({ square: selectedSquare, verbose: true });
+      moves.forEach(m => {
+        document.querySelector(`[data-pos="${m.to}"]`).classList.add('highlight');
+      });
+    }
+
+    function makeAiMove() {
+      const moves = chess.moves();
+      if (moves.length > 0) {
+        chess.move(moves[Math.floor(Math.random() * moves.length)]);
+        render();
+        updateStatus();
+      }
+    }
+
+    function updateStatus() {
+      if (chess.in_checkmate()) statusEl.textContent = "Checkmate.";
+      else statusEl.textContent = chess.turn() === 'w' ? "Your move." : "Wizard thinking...";
+    }
+
+    render();
   </script>
 </body>
 </html>
