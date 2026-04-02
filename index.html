@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Wizard Hair</title>
   <style>
-    /* YOUR EXACT COLOR SCHEME */
+    /* PRESERVED GRADIENT & GLOW */
     html { background: #0a0a0a; height: 100%; }
     body {
       margin: 0; padding: 0;
@@ -23,27 +23,21 @@
       min-height: 100vh;
     }
 
-    header { text-align: center; padding: 5rem 1rem 3rem; }
+    header { text-align: center; padding: 4rem 1rem 2rem; }
     h1 {
-      font-size: 4rem; margin: 0; color: #4080D9;
+      font-size: clamp(2.5rem, 10vw, 4rem); margin: 0; color: #4080D9;
       text-shadow: 0 0 20px #49CFF6, 0 0 30px rgba(73, 207, 246, 0.5);
     }
-    .tag { font-size: 1.5rem; max-width: 750px; margin: 1rem auto; opacity: 0.9; }
-    main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .tag { font-size: 1.2rem; max-width: 700px; margin: 1rem auto; opacity: 0.8; padding: 0 1rem; }
+    main { max-width: 800px; margin: 0 auto; padding: 1rem; }
     
-    .button {
-      display: inline-block; margin-bottom: 2rem; padding: 1rem 2rem;
-      background: #5199D9; color: #000; text-decoration: none;
-      border-radius: 50px; font-weight: bold; text-shadow: none;
-    }
-
     /* THE BOARD */
     #board-container {
       width: 100%; max-width: 500px;
       margin: 2rem auto; border: 4px solid #222;
       box-shadow: 0 0 50px #000; aspect-ratio: 1;
       background: #050505;
-      touch-action: manipulation;
+      touch-action: none;
     }
     #board {
       display: grid; grid-template-columns: repeat(8, 1fr);
@@ -51,76 +45,133 @@
     }
     .square {
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; position: relative;
+      cursor: pointer; position: relative; transition: background 0.15s ease;
     }
-    .square.light { background: #11111a; }
+    .square.light { background: #151520; }
     .square.dark { background: #050505; }
 
+    /* Highlights */
     .square.selected { background: #1a3a5a !important; box-shadow: inset 0 0 15px #49CFF6; }
     .square.highlight::after {
-      content: '';
-      width: 30%; height: 30%;
-      background: rgba(73, 207, 246, 0.6);
-      border-radius: 50%;
-      filter: blur(2px);
+      content: ''; width: 25%; height: 25%; 
+      background: rgba(73, 207, 246, 0.6); border-radius: 50%;
+    }
+    .square.highlight.capture::after {
+      width: 80%; height: 80%; background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.2);
     }
 
     .piece {
-      font-size: clamp(1.8rem, 9vw, 3.2rem);
+      font-size: clamp(1.8rem, 9vw, 2.8rem);
       user-select: none; pointer-events: none;
       text-shadow: 0 2px 10px rgba(0,0,0,1) !important;
+      transition: transform 0.1s ease;
     }
-    #status { text-align: center; font-size: 1.2rem; margin-top: 1rem; font-style: italic; color: #49CFF6; }
+    
+    #status { text-align: center; font-size: 1.1rem; margin-top: 1rem; color: #49CFF6; height: 1.5em; }
+    .button {
+      display: inline-block; margin-top: 1rem; padding: 0.8rem 1.5rem;
+      background: #5199D9; color: #000; text-decoration: none;
+      border-radius: 50px; font-weight: bold; text-shadow: none;
+    }
   </style>
 </head>
 <body>
+
   <header>
     <h1>Wizard Hair</h1>
     <div class="tag">Hello. Welcome, one. You have been greeted and are considered greeting. My gratitude. Seen by you. Appreciation of mild formality.</div>
   </header>
 
   <main>
-    <p>Three Nine Twenty Seven</p>
+        <p>Three Nine Twenty Seven</p>
     <p>This isn't a joke. It's not a gimmick. Why is my hair so gray. count high. \underline{\fcolorbox{evil}{\begin{die}{666\usersworth}{\textbf{You are in the wrong place homie.}}}}!
       
       %\end{die} this is commented out on purpose, you are not leaving this environment</p>
-    <a href="https://hohm.cc" class="button">Grow eyes grow!</a>
-    
     <div id="board-container"><div id="board"></div></div>
-    <div id="status">Initializing...</div>
+    <div id="status">Your turn.</div>
+    <center><a href="https://hohm.cc" class="button">Grow eyes grow!</a></center>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
   <script>
-    // Force wait for DOM and Library
-    window.onload = () => {
-      const chess = new Chess();
-      const boardEl = document.getElementById('board');
-      const statusEl = document.getElementById('status');
-      const GLYPHS = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
-      const HUE_OFFSETS = { p:0, n:30, b:60, r:90, q:120, k:150 };
-      let selectedPos = null;
+    const chess = new Chess();
+    const boardEl = document.getElementById('board');
+    const statusEl = document.getElementById('status');
+    const GLYPHS = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+    const SHADES = { p:0, n:30, b:60, r:90, q:120, k:150 };
 
-      function getPieceColor(type, side) {
-        const shift = HUE_OFFSETS[type];
-        return side === 'w' 
-          ? `hsl(${180 + (shift * 0.6)}, 85%, 75%)` 
-          : `hsl(${10 + (shift * 0.4)}, 90%, 55%)`;
+    let selected = null;
+
+    function getColor(type, side) {
+      const hue = SHADES[type];
+      return side === 'w' ? `hsl(${190 + hue*0.5}, 85%, 75%)` : `hsl(${10 + hue*0.4}, 90%, 55%)`;
+    }
+
+    function update() {
+      boardEl.innerHTML = '';
+      const state = chess.board();
+      const moves = selected ? chess.moves({ square: selected, verbose: true }) : [];
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const pos = String.fromCharCode(97 + c) + (8 - r);
+          const sq = document.createElement('div');
+          sq.className = `square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
+          if (selected === pos) sq.classList.add('selected');
+          
+          // Check if this square is a valid move
+          const move = moves.find(m => m.to === pos);
+          if (move) {
+            sq.classList.add('highlight');
+            if (move.captured) sq.classList.add('capture');
+          }
+
+          const piece = state[r][c];
+          if (piece) {
+            const pEl = document.createElement('div');
+            pEl.className = 'piece';
+            pEl.textContent = GLYPHS[piece.type];
+            pEl.style.color = getColor(piece.type, piece.color);
+            sq.appendChild(pEl);
+          }
+
+          sq.onpointerdown = (e) => {
+            e.preventDefault();
+            if (move) {
+              chess.move({ from: selected, to: pos, promotion: 'q' });
+              selected = null;
+              update();
+              setTimeout(ai, 400);
+            } else {
+              const p = chess.get(pos);
+              selected = (p && p.color === 'w') ? pos : null;
+              update();
+            }
+          };
+          boardEl.appendChild(sq);
+        }
       }
+      checkStatus();
+    }
 
-      function draw() {
-        boardEl.innerHTML = '';
-        for (let r = 0; r < 8; r++) {
-          for (let c = 0; c < 8; c++) {
-            const pos = String.fromCharCode(97 + c) + (8 - r);
-            const sq = document.createElement('div');
-            sq.className = `square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
-            sq.dataset.pos = pos;
-            
-            if (selectedPos === pos) sq.classList.add('selected');
+    function ai() {
+      const moves = chess.moves();
+      if (!moves.length) return;
+      // Simple AI: prefer captures
+      const captures = moves.filter(m => m.includes('x'));
+      const finalMove = captures.length ? captures[Math.floor(Math.random()*captures.length)] : moves[Math.floor(Math.random()*moves.length)];
+      chess.move(finalMove);
+      update();
+    }
 
-            const piece = chess.get(pos);
-            if (piece) {
-              const pEl = document.createElement('div');
-              pEl.className = 'piece';
-              pEl.textContent = GLYPHS
+    function checkStatus() {
+      if (chess.in_checkmate()) statusEl.textContent = "Checkmate. It is over.";
+      else if (chess.in_draw()) statusEl.textContent = "A draw. Stillness.";
+      else statusEl.textContent = chess.turn() === 'w' ? "Your move." : "Wizard thinking...";
+    }
+
+    update();
+  </script>
+</body>
+</html>
