@@ -1,3 +1,126 @@
-This isn't a joke. It's not a gimmick. Why is my hair so gray. count high. \underline{\fcolorbox{evil}{\begin{die}{666\usersworth}{\textbf{You are in the wrong place homie.}}}}!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Wizard Hair</title>
+  <style>
+    /* YOUR EXACT COLOR SCHEME */
+    html { background: #0a0a0a; height: 100%; }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Georgia', serif;
+      color: #27AFD6;
+      line-height: 1.6;
+      text-shadow: 0 0 27px rgba(167, 213, 254, 0.9);
+      background: linear-gradient(
+        to bottom, 
+        #0f0a0f 0%, #0a0a0a 9%, #0a0a0a 18%,
+        #0e0e1a 27%, #0e0e1f 39%, #0a0a0a 54%,
+        #0a0a0a 66%, #0a0f0f 93%
+      ) no-repeat;
+      background-attachment: scroll;
+      min-height: 100vh;
+    }
+
+    header { text-align: center; padding: 5rem 1rem 3rem; }
+    h1 {
+      font-size: 4rem; margin: 0; color: #4080D9;
+      text-shadow: 0 0 20px #49CFF6, 0 0 30px rgba(73, 207, 246, 0.5);
+    }
+    .tag { font-size: 1.5rem; max-width: 750px; margin: 1rem auto; opacity: 0.9; }
+    main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    
+    .button {
+      display: inline-block; margin-bottom: 2rem; padding: 1rem 2rem;
+      background: #5199D9; color: #000; text-decoration: none;
+      border-radius: 50px; font-weight: bold; text-shadow: none;
+    }
+
+    /* THE BOARD */
+    #board-container {
+      width: 100%; max-width: 500px;
+      margin: 2rem auto; border: 4px solid #222;
+      box-shadow: 0 0 50px #000; aspect-ratio: 1;
+      background: #050505;
+      touch-action: manipulation;
+    }
+    #board {
+      display: grid; grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr); width: 100%; height: 100%;
+    }
+    .square {
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
+    }
+    .square.light { background: #11111a; }
+    .square.dark { background: #050505; }
+
+    .square.selected { background: #1a3a5a !important; box-shadow: inset 0 0 15px #49CFF6; }
+    .square.highlight::after {
+      content: '';
+      width: 30%; height: 30%;
+      background: rgba(73, 207, 246, 0.6);
+      border-radius: 50%;
+      filter: blur(2px);
+    }
+
+    .piece {
+      font-size: clamp(1.8rem, 9vw, 3.2rem);
+      user-select: none; pointer-events: none;
+      text-shadow: 0 2px 10px rgba(0,0,0,1) !important;
+    }
+    #status { text-align: center; font-size: 1.2rem; margin-top: 1rem; font-style: italic; color: #49CFF6; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Wizard Hair</h1>
+    <div class="tag">Hello. Welcome, one. You have been greeted and are considered greeting. My gratitude. Seen by you. Appreciation of mild formality.</div>
+  </header>
+
+  <main>
+    <p>Three Nine Twenty Seven</p>
+    <p>This isn't a joke. It's not a gimmick. Why is my hair so gray. count high. \underline{\fcolorbox{evil}{\begin{die}{666\usersworth}{\textbf{You are in the wrong place homie.}}}}!
       
-      %\end{die} this is commented out on purpose, you are not leaving this environment
+      %\end{die} this is commented out on purpose, you are not leaving this environment</p>
+    <a href="https://hohm.cc" class="button">Grow eyes grow!</a>
+    
+    <div id="board-container"><div id="board"></div></div>
+    <div id="status">Initializing...</div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script>
+    // Force wait for DOM and Library
+    window.onload = () => {
+      const chess = new Chess();
+      const boardEl = document.getElementById('board');
+      const statusEl = document.getElementById('status');
+      const GLYPHS = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+      const HUE_OFFSETS = { p:0, n:30, b:60, r:90, q:120, k:150 };
+      let selectedPos = null;
+
+      function getPieceColor(type, side) {
+        const shift = HUE_OFFSETS[type];
+        return side === 'w' 
+          ? `hsl(${180 + (shift * 0.6)}, 85%, 75%)` 
+          : `hsl(${10 + (shift * 0.4)}, 90%, 55%)`;
+      }
+
+      function draw() {
+        boardEl.innerHTML = '';
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const pos = String.fromCharCode(97 + c) + (8 - r);
+            const sq = document.createElement('div');
+            sq.className = `square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
+            sq.dataset.pos = pos;
+            
+            if (selectedPos === pos) sq.classList.add('selected');
+
+            const piece = chess.get(pos);
+            if (piece) {
+              const pEl = document.createElement('div');
+              pEl.className = 'piece';
+              pEl.textContent = GLYPHS
