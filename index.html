@@ -4,52 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wizard Hair</title>
-  <meta name="description" content="Gray hair. Long wisdom. The Theory of Everything—brought to you by me.">
   <style>
-    /* 1. Global Reset & Universal Glow */
-    * {
+    /* The Full Page Gradient */
+    html {
+      background: #0a0a0a;
+    }
+    
+    body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      /* This hits EVERY letter on the page with a 50% intensity glow */
-      text-shadow: 0 0 8px rgba(73, 207, 246, 0.4);
-    }
-
-    html, body {
-      min-height: 100%;
       font-family: 'Georgia', serif;
-      color: #49CFF6;
+      color: #27AFD6;
       line-height: 1.6;
-      /* Gradient spans the entire scrollable page */
+      /* Glow for ALL letters at 50% intensity */
+      text-shadow: 0 0 27px rgba(167, 213, 254, 0.9);
+      
+      /* Gradient peaks (Lightens) at the end of the header block */
       background: linear-gradient(
         to bottom, 
-        #0a0a0a 0%, 
-        #1a1a1a 10%, 
-        #333333 25%, /* Peak: ends right around the 'formality' text */
-        #0a0a0a 50%, 
-        #0a0a0a 100%
-      ) no-repeat fixed;
-      background-color: #0a0a0a;
+        #0f0a0f 0%,
+        #0a0a0a 9%, 
+        #0a0a0a 18%,
+        #0e0e1a 27%, 
+        #0e0e1f 39%,
+        #0a0a0a 54%,
+        #0a0a0a 66%,
+        #0a0f0f 93%
+      ) no-repeat;
+      background-attachment: scroll;
     }
 
     header {
       text-align: center;
-      padding: 6rem 1rem 3rem 1rem;
+      padding: 5rem 1rem 3rem;
     }
 
     h1 {
       font-size: 4rem;
+      margin: 0;
       color: #4080D9;
-      /* 100% Intensity Glow (Override for the title) */
-      text-shadow: 0 0 20px #49CFF6, 0 0 10px rgba(73, 207, 246, 0.8);
-      margin-bottom: 1rem;
+      /* 100% Intensity Title Glow */
+      text-shadow: 0 0 20px #49CFF6, 0 0 30px rgba(73, 207, 246, 0.5);
     }
 
     .tag {
       font-size: 1.5rem;
+      max-width: 750px;
+      margin: 1rem auto;
       opacity: 0.9;
-      max-width: 800px;
-      margin: 0 auto;
     }
 
     main {
@@ -63,146 +65,42 @@
       margin-bottom: 2rem;
     }
 
-    /* 2. Chess Board Styles */
-    #board-container {
-      position: relative;
-      width: 100%;
-      max-width: 560px;
-      margin: 3rem auto;
-      border: 4px solid #222;
-      box-shadow: 0 0 50px #000;
-      aspect-ratio: 1;
-      background: #000;
-    }
-
-    #board {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      grid-template-rows: repeat(8, 1fr);
-      width: 100%;
-      height: 100%;
-    }
-
-    .square {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
-    }
-
-    /* Keep the pieces from having the fuzzy text-glow so they stay sharp */
-    .piece {
-      font-size: clamp(1.2rem, 5vw, 2.8rem);
-      text-shadow: 0 2px 5px rgba(0,0,0,0.9) !important;
-      z-index: 10;
-    }
-
-    #status {
-      text-align: center;
-      margin-top: 1rem;
-      font-style: italic;
-    }
-
     .button {
       display: inline-block;
-      padding: 1rem 2rem;
-      background: #5199D9;
-      color: #000;
-      text-decoration: none;
-      border-radius: 50px;
-      font-weight: bold;
-      /* Remove glow on button text for legibility */
-      text-shadow: none; 
       margin-bottom: 2rem;
-    }
-
-    }
-    p {
-      font-size: 1.3rem;
-    }
-    .button {
-      display: inline-block;
-      margin-top: 2rem;
       padding: 1rem 2rem;
       background: #5199D9;
       color: #000;
       text-decoration: none;
       border-radius: 50px;
       font-weight: bold;
-    }
-    .button:hover {
-      background: #e0c56b;
+      text-shadow: none; /* Keep button text readable */
     }
 
-    /* Chess Board Styling */
+    /* Chess Layout */
     #board-container {
-      position: relative;
       width: 100%;
-      max-width: 560px;
+      max-width: 500px;
       margin: 2rem auto;
-      border: 4px solid #222;
-      box-shadow: 0 0 30px #000;
       aspect-ratio: 1;
-    }
-
-    #board {
+      border: 4px solid #222;
+      background: #111;
       display: grid;
       grid-template-columns: repeat(8, 1fr);
       grid-template-rows: repeat(8, 1fr);
-      width: 100%;
-      height: 100%;
     }
 
     .square {
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: filter 0.1s;
-      position: relative;
-    }
-
-    .square.selected {
-      filter: brightness(1.6);
-      outline: 3px solid #fff;
-      outline-offset: -3px;
-      z-index: 2;
-    }
-
-    .square.highlight::after {
-      content: '';
-      position: absolute;
-      width: 35%;
-      height: 35%;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.45);
-      pointer-events: none;
-    }
-
-    .square.highlight.occupied::after {
-      width: 90%;
-      height: 90%;
-      border-radius: 0;
-      background: rgba(255,255,255,0.2);
-      border: 3px solid rgba(255,255,255,0.5);
-      box-sizing: border-box;
+      font-size: clamp(1.5rem, 8vw, 3rem);
     }
 
     .piece {
-      font-size: clamp(1.2rem, 5vw, 2.8rem);
-      line-height: 1;
-      user-select: none;
-      pointer-events: none;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    }
-
-    #status {
-      text-align: center;
-      font-size: 1rem;
-      margin-top: 0.5rem;
-      opacity: 0.7;
-      min-height: 1.4em;
+      cursor: pointer;
+      /* Pieces don't get the fuzzy text glow */
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;
     }
   </style>
 </head>
@@ -216,179 +114,55 @@
   <main>
     <p>Three Nine Twenty Seven</p>
     <p>This isn't a joke. It's not a gimmick. Why is my hair so gray. And why was this domain only eighty cents past one single United States Dollars Bill.</p>
-    <p>You have my permission to remain put if you find yourself rather comfy...</p>
-
-    <a href="[https://hohm.cc](https://hohm.cc)" class="button">Grow eyes grow!</a>
+    
+    <a href="https://hohm.cc" class="button">Grow eyes grow!</a>
 
     <p>or we can play chess.</p>
 
-    <div id="board-container">
-      <div id="board"></div>
-    </div>
-    <div id="status">You are White. Your move.</div>
+    <div id="board-container" id="board">
+      </div>
   </main>
 
-  <script src="[https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js](https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js)"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
   <script>
-    const chess = new Chess();
-    const boardEl = document.getElementById('board');
-    const statusEl = document.getElementById('status');
-    let selected = null;
-    let squares = [];
-
-    function getSquareColor(file, rank, isLight) {
-      const dist = Math.max(Math.abs(3.5 - file), Math.abs(3.5 - rank));
-      if (isLight) {
-        const hue = 60 - dist * 9;
-        const sat = 80 + dist * 2;
-        const lit = 60 - dist * 3;
-        return `hsl(${hue}, ${sat}%, ${lit}%)`;
-      } else {
-        const hue = 185 + dist * 13;
-        const sat = 75 + dist * 3;
-        const lit = 35 - dist * 2;
-        return `hsl(${hue}, ${sat}%, ${lit}%)`;
-      }
-    }
-
-    function getPieceColor(file, rank, pieceColor) {
-      const dist = Math.max(Math.abs(3.5 - file), Math.abs(3.5 - rank));
-      if (pieceColor === 'w') {
-        const hue = 55 - dist * 8;
-        return `hsl(${hue}, 100%, 75%)`;
-      } else {
-        const hue = 190 + dist * 12;
-        return `hsl(${hue}, 90%, 72%)`;
-      }
-    }
-
-    const PIECE_GLYPHS = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
-
-    function squareName(file, rank) {
-      return String.fromCharCode(97 + file) + (8 - rank);
-    }
-
-    function buildBoard() {
-      boardEl.innerHTML = '';
-      squares = [];
-      for (let rank = 0; rank < 8; rank++) {
-        for (let file = 0; file < 8; file++) {
-          const sq = document.createElement('div');
-          sq.classList.add('square');
-          const isLight = (rank + file) % 2 !== 0;
-          sq.dataset.rank = rank;
-          sq.dataset.file = file;
-          sq.dataset.isLight = isLight ? '1' : '0';
-          sq.style.background = getSquareColor(file, rank, isLight);
-          sq.addEventListener('click', () => handleClick(rank, file));
-          boardEl.appendChild(sq);
-          squares.push(sq);
-        }
-      }
-    }
-
-    function updateBoard() {
-      squares.forEach((sq, i) => {
-        sq.innerHTML = '';
-        sq.classList.remove('highlight', 'selected', 'occupied');
-        const rank = Math.floor(i / 8);
-        const file = i % 8;
-        const isLight = sq.dataset.isLight === '1';
-        sq.style.background = getSquareColor(file, rank, isLight);
-
-        const piece = chess.get(squareName(file, rank));
-        if (piece) {
-          sq.classList.add('occupied');
-          const pieceEl = document.createElement('div');
-          pieceEl.classList.add('piece');
-          pieceEl.textContent = PIECE_GLYPHS[piece.type];
-          pieceEl.style.color = getPieceColor(file, rank, piece.color);
-          sq.appendChild(pieceEl);
-        }
-      });
-    }
-
-    function clearHighlights() {
-      squares.forEach(sq => {
-        sq.classList.remove('highlight', 'selected');
-      });
-    }
-
-    function highlightMoves(rank, file) {
-      clearHighlights();
-      const sq = squares[rank * 8 + file];
-      sq.classList.add('selected');
-
-      const moves = chess.moves({ square: squareName(file, rank), verbose: true });
-      moves.forEach(m => {
-        const tgtFile = m.to.charCodeAt(0) - 97;
-        const tgtRank = 8 - parseInt(m.to[1]);
-        const tgtSq = squares[tgtRank * 8 + tgtFile];
-        tgtSq.classList.add('highlight');
-      });
-    }
-
-    function updateStatus() {
-      if (chess.in_checkmate()) {
-        statusEl.textContent = chess.turn() === 'w' ? 'Checkmate. Black wins.' : 'Checkmate. You win.';
-      } else if (chess.in_draw()) {
-        statusEl.textContent = 'Draw.';
-      } else if (chess.in_check()) {
-        statusEl.textContent = chess.turn() === 'w' ? 'Check. Your move.' : 'Check. Thinking...';
-      } else {
-        statusEl.textContent = chess.turn() === 'w' ? 'Your move.' : 'Thinking...';
-      }
-    }
-
-    function handleClick(rank, file) {
-      if (chess.turn() !== 'w' || chess.game_over()) return;
-
-      if (selected) {
-        const from = squareName(selected.file, selected.rank);
-        const to = squareName(file, rank);
-        const move = chess.move({ from, to, promotion: 'q' });
-        if (move) {
-          clearHighlights();
-          updateBoard();
-          updateStatus();
-          selected = null;
-          if (!chess.game_over()) {
-            setTimeout(computerMove, 400);
-          }
+    const board = document.getElementById('board-container');
+    const PIECES = { 
+      k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟',
+      K:'♔', Q:'♕', R:'♖', B:'♗', N:'♘', P:'♙'
+    };
+    
+    // Simple visual board setup
+    const startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+    const rows = startFen.split('/');
+    
+    rows.forEach((row, rIdx) => {
+      let cIdx = 0;
+      for (const char of row) {
+        if (isNaN(char)) {
+          addSquare(char, rIdx, cIdx);
+          cIdx++;
         } else {
-          const piece = chess.get(squareName(file, rank));
-          if (piece && piece.color === 'w') {
-            selected = { rank, file };
-            highlightMoves(rank, file);
-          } else {
-            clearHighlights();
-            selected = null;
+          for (let i = 0; i < parseInt(char); i++) {
+            addSquare('', rIdx, cIdx);
+            cIdx++;
           }
         }
-      } else {
-        const piece = chess.get(squareName(file, rank));
-        if (piece && piece.color === 'w') {
-          selected = { rank, file };
-          highlightMoves(rank, file);
-        }
       }
-    }
+    });
 
-    function computerMove() {
-      if (chess.turn() !== 'b' || chess.game_over()) return;
-      const moves = chess.moves();
-      if (moves.length === 0) return;
-      const captures = moves.filter(m => m.includes('x'));
-      const pool = captures.length > 0 && Math.random() > 0.4 ? captures : moves;
-      chess.move(pool[Math.floor(Math.random() * pool.length)]);
-      updateBoard();
-      updateStatus();
+    function addSquare(piece, r, c) {
+      const sq = document.createElement('div');
+      sq.className = 'square';
+      sq.style.background = (r + c) % 2 === 0 ? '#333' : '#222';
+      if (piece) {
+        const p = document.createElement('div');
+        p.className = 'piece';
+        p.textContent = PIECES[piece];
+        p.style.color = piece === piece.toUpperCase() ? '#fff' : '#49CFF6';
+        sq.appendChild(p);
+      }
+      board.appendChild(sq);
     }
-
-    buildBoard();
-    updateBoard();
-    updateStatus();
   </script>
 </body>
 </html>
