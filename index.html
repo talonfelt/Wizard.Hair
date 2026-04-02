@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wizard Hair</title>
   <style>
-    /* YOUR EXACT COLOR SCHEME - PRESERVED */
+    /* YOUR EXACT COLOR SCHEME - ABSOLUTELY UNTOUCHED */
     html { background: #0a0a0a; }
     body {
       margin: 0; padding: 0;
@@ -14,15 +14,10 @@
       line-height: 1.6;
       text-shadow: 0 0 27px rgba(167, 213, 254, 0.9);
       background: linear-gradient(
-        to bottom,
-        #0f0a0f 0%,
-        #0a0a0a 9%,
-        #0a0a0a 18%,
-        #0e0e1a 27%,
-        #0e0e1f 39%,
-        #0a0a0a 54%,
-        #0a0a0a 66%,
-        #0a0f0f 93%
+        to bottom, 
+        #0f0a0f 0%, #0a0a0a 9%, #0a0a0a 18%,
+        #0e0e1a 27%, #0e0e1f 39%, #0a0a0a 54%,
+        #0a0a0a 66%, #0a0f0f 93%
       ) no-repeat;
       background-attachment: scroll;
     }
@@ -35,17 +30,20 @@
     .tag { font-size: 1.5rem; max-width: 750px; margin: 1rem auto; opacity: 0.9; }
     main { max-width: 800px; margin: 0 auto; padding: 2rem; }
     p { font-size: 1.3rem; margin-bottom: 2rem; }
+    
     .button {
       display: inline-block; margin-bottom: 2rem; padding: 1rem 2rem;
       background: #5199D9; color: #000; text-decoration: none;
       border-radius: 50px; font-weight: bold; text-shadow: none;
     }
 
-    /* CHESS BOARD - FIXED PIECE SYSTEM */
+    /* THE CHESSBOARD - FIXED VISIBILITY & SCALE */
     #board-container {
       width: 100%; max-width: 560px;
       margin: 2rem auto; border: 4px solid #222;
-      box-shadow: 0 0 30px #000; aspect-ratio: 1;
+      box-shadow: 0 0 50px #000; aspect-ratio: 1;
+      background: #050505;
+      touch-action: none; 
     }
     #board {
       display: grid; grid-template-columns: repeat(8, 1fr);
@@ -55,19 +53,19 @@
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; position: relative;
     }
-    .square.light { background: #1a1a2a; }
-    .square.dark { background: #0a0a0a; }
+    .square.light { background: #11111a; }
+    .square.dark { background: #050505; }
 
-    /* Highlights: The square itself glows brighter */
-    .square.selected { background: #3a3a5a !important; outline: 2px solid #fff inset; }
-    .square.highlight { filter: brightness(2.5); z-index: 1; }
+    /* Highlights: Brighter version of the square */
+    .square.selected { background: #1a3a5a !important; box-shadow: inset 0 0 15px #49CFF6; }
+    .square.highlight { filter: brightness(2.8) saturate(1.2); z-index: 1; }
 
     .piece {
-      font-size: clamp(1.5rem, 8vw, 3rem);
+      font-size: clamp(1.8rem, 9vw, 3.2rem);
       user-select: none; pointer-events: none;
-      text-shadow: 0 2px 8px rgba(0,0,0,1) !important;
+      text-shadow: 0 2px 10px rgba(0,0,0,1) !important;
     }
-    #status { text-align: center; font-size: 1.1rem; margin-top: 1rem; font-style: italic; }
+    #status { text-align: center; font-size: 1.2rem; margin-top: 1rem; font-style: italic; color: #49CFF6; }
   </style>
 </head>
 <body>
@@ -82,9 +80,9 @@
       
       %\end{die} this is commented out on purpose, you are not leaving this environment</p>
     <a href="https://hohm.cc" class="button">Grow eyes grow!</a>
-    <p>or we can play chess.</p>
+    
     <div id="board-container"><div id="board"></div></div>
-    <div id="status">Your move.</div>
+    <div id="status">Your turn.</div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
@@ -92,90 +90,80 @@
     const chess = new Chess();
     const boardEl = document.getElementById('board');
     const statusEl = document.getElementById('status');
-    const PIECE_GLYPHS = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+    const GLYPHS = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
     
-    // Each piece type gets a specific Hue offset within its half of the spectrum
-    const PIECE_SHADES = {
-      p: 0,   // Base
-      n: 20,  // Shifted
-      b: 40,  // Shifted
-      r: 60,  // Shifted
-      q: 80,  // Brightest shift
-      k: 100  // Special
-    };
+    // Each piece type has its own shade
+    const HUE_OFFSETS = { p:0, n:35, b:70, r:105, q:140, k:175 };
 
-    let selectedSquare = null;
+    let selectedPos = null;
 
-    function getPieceStyle(type, color) {
-      const hueShift = PIECE_SHADES[type];
-      if (color === 'w') {
-        // Cyan/Blue side: Hue 190 to 290
-        return `hsl(${190 + hueShift}, 80%, 70%)`;
+    function getPieceColor(type, side) {
+      const shift = HUE_OFFSETS[type];
+      if (side === 'w') {
+        // Cold Spectrum: Cyan to Violet
+        return `hsl(${185 + (shift * 0.5)}, 80%, 70%)`;
       } else {
-        // Gold/Red side: Hue 10 to 60
-        return `hsl(${10 + (hueShift/2)}, 90%, 60%)`;
+        // Warm Spectrum: Amber to Crimson
+        return `hsl(${15 + (shift * 0.4)}, 90%, 55%)`;
       }
     }
 
     function render() {
       boardEl.innerHTML = '';
-      const board = chess.board();
+      const state = chess.board();
       for (let r = 0; r < 8; r++) {
         for (let c = 0; c < 8; c++) {
-          const sq = document.createElement('div');
           const pos = String.fromCharCode(97 + c) + (8 - r);
+          const sq = document.createElement('div');
           sq.className = `square ${(r + c) % 2 === 0 ? 'light' : 'dark'}`;
           sq.dataset.pos = pos;
           
-          if (selectedSquare === pos) sq.classList.add('selected');
-          
-          const piece = board[r][c];
+          if (selectedPos === pos) sq.classList.add('selected');
+
+          const piece = state[r][c];
           if (piece) {
             const pEl = document.createElement('div');
             pEl.className = 'piece';
-            pEl.textContent = PIECE_GLYPHS[piece.type];
-            pEl.style.color = getPieceStyle(piece.type, piece.color);
+            pEl.textContent = GLYPHS[piece.type];
+            pEl.style.color = getPieceColor(piece.type, piece.color);
             sq.appendChild(pEl);
           }
-          
-          sq.onclick = () => handleSquareClick(pos);
+
+          // Use pointerdown for better mobile response
+          sq.onpointerdown = (e) => {
+            e.preventDefault();
+            const move = chess.moves({ square: selectedPos, verbose: true }).find(m => m.to === pos);
+            
+            if (move) {
+              chess.move(move);
+              selectedPos = null;
+              render();
+              setTimeout(ai, 400);
+            } else {
+              const p = chess.get(pos);
+              if (p && p.color === 'w') {
+                selectedPos = pos;
+                render();
+                // Apply highlights
+                chess.moves({ square: pos, verbose: true }).forEach(m => {
+                  const targetSq = document.querySelector(`[data-pos="${m.to}"]`);
+                  if (targetSq) targetSq.classList.add('highlight');
+                });
+              } else {
+                selectedPos = null;
+                render();
+              }
+            }
+            updateStatus();
+          };
           boardEl.appendChild(sq);
         }
       }
     }
 
-    function handleSquareClick(pos) {
-      const moves = chess.moves({ square: selectedSquare, verbose: true });
-      const move = moves.find(m => m.to === pos);
-
-      if (move) {
-        chess.move(move);
-        selectedSquare = null;
-        setTimeout(makeAiMove, 400);
-      } else {
-        const piece = chess.get(pos);
-        if (piece && piece.color === 'w') {
-          selectedSquare = pos;
-        } else {
-          selectedSquare = null;
-        }
-      }
-      render();
-      highlightMoves();
-      updateStatus();
-    }
-
-    function highlightMoves() {
-      if (!selectedSquare) return;
-      const moves = chess.moves({ square: selectedSquare, verbose: true });
-      moves.forEach(m => {
-        document.querySelector(`[data-pos="${m.to}"]`).classList.add('highlight');
-      });
-    }
-
-    function makeAiMove() {
+    function ai() {
       const moves = chess.moves();
-      if (moves.length > 0) {
+      if (moves.length) {
         chess.move(moves[Math.floor(Math.random() * moves.length)]);
         render();
         updateStatus();
@@ -183,8 +171,9 @@
     }
 
     function updateStatus() {
-      if (chess.in_checkmate()) statusEl.textContent = "Checkmate.";
-      else statusEl.textContent = chess.turn() === 'w' ? "Your move." : "Wizard thinking...";
+      if (chess.in_checkmate()) statusEl.textContent = "Checkmate. Game Over.";
+      else if (chess.in_draw()) statusEl.textContent = "Draw.";
+      else statusEl.textContent = chess.turn() === 'w' ? "Your move." : "Thinking...";
     }
 
     render();
