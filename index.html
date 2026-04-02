@@ -6,30 +6,46 @@
   <title>Wizard Hair</title>
   <meta name="description" content="Gray hair. Long wisdom. The Theory of Everything—brought to you by me.">
   <style>
-    body {
+      body {
       margin: 0;
       padding: 0;
       font-family: 'Georgia', serif;
       background: #0a0a0a;
       color: #49CFF6;
       line-height: 1.6;
+      /* Subtle glow for all text (50% of the H1 intensity) */
+      text-shadow: 0 0 10px rgba(73, 207, 246, 0.5);
     }
+
     header {
       text-align: center;
       padding: 5rem 1rem;
-      background: linear-gradient(to bottom, #1a1a1a, #000);
+      /* Fades from black, to almost white at the text, back to black */
+      background: linear-gradient(
+        to bottom, 
+        #0a0a0a 0%, 
+        #1a1a1a 20%, 
+        #dcdcdc 50%, 
+        #1a1a1a 80%, 
+        #0a0a0a 100%
+      );
     }
+
     h1 {
       font-size: 4rem;
       margin: 0;
       color: #4080D9;
+      /* Full intensity glow for the title */
       text-shadow: 0 0 20px #49CFF6;
     }
+
     .tag {
       font-size: 1.5rem;
-      opacity: 0.7;
+      opacity: 0.9; /* Increased slightly so the glow is visible */
       margin-top: 0.5rem;
+      color: #000; /* Darker text helps it pop against the light gradient */
     }
+
     main {
       max-width: 800px;
       margin: 0 auto;
