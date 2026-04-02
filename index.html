@@ -6,27 +6,26 @@
   <title>Wizard Hair</title>
   <meta name="description" content="Gray hair. Long wisdom. The Theory of Everything—brought to you by me.">
   <style>
-      body {
+          body {
       margin: 0;
       padding: 0;
       font-family: 'Georgia', serif;
       background: #0a0a0a;
       color: #49CFF6;
       line-height: 1.6;
-      /* Subtle glow for all text (50% of the H1 intensity) */
-      text-shadow: 0 0 10px rgba(73, 207, 246, 0.5);
+      /* The 50% Glow: Half the intensity of the Title */
+      text-shadow: 0 0 8px rgba(73, 207, 246, 0.6); 
     }
 
     header {
       text-align: center;
-      padding: 5rem 1rem;
-      /* Fades from black, to almost white at the text, back to black */
+      padding: 6rem 1rem;
+      /* Fades to white-ish exactly where the 'formality' text sits */
       background: linear-gradient(
         to bottom, 
         #0a0a0a 0%, 
-        #1a1a1a 20%, 
-        #dcdcdc 50%, 
-        #1a1a1a 80%, 
+        #151515 40%, 
+        #e0e0e0 70%, 
         #0a0a0a 100%
       );
     }
@@ -35,21 +34,31 @@
       font-size: 4rem;
       margin: 0;
       color: #4080D9;
-      /* Full intensity glow for the title */
-      text-shadow: 0 0 20px #49CFF6;
+      /* The 100% Glow */
+      text-shadow: 0 0 20px #49CFF6, 0 0 10px #49CFF6;
     }
 
     .tag {
       font-size: 1.5rem;
-      opacity: 0.9; /* Increased slightly so the glow is visible */
-      margin-top: 0.5rem;
-      color: #000; /* Darker text helps it pop against the light gradient */
+      margin-top: 1rem;
+      /* Darker color so it's readable against the white fade */
+      color: #111; 
+      font-style: italic;
+      /* Removing the blue glow here so it doesn't look messy on white */
+      text-shadow: none; 
+      opacity: 0.9;
     }
 
     main {
       max-width: 800px;
       margin: 0 auto;
       padding: 2rem;
+    }
+
+    /* Keep the chess pieces clear of the global text glow */
+    .piece {
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+    }
     }
     p {
       font-size: 1.3rem;
